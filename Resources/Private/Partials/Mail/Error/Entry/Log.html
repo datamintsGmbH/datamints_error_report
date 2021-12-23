@@ -1,0 +1,14 @@
+<div flux:schemaLocation="http://fluidtypo3.org/schemas/flux-7.0.0.xsd" lang="en"
+     v:schemaLocation="http://fluidtypo3.org/schemas/vhs-1.8.5.xsd"
+     xmlns="http://www.w3.org/1999/xhtml"
+     xmlns:f="http://typo3.org/ns/TYPO3/Fluid/ViewHelpers"
+
+     xmlns:flux="http://typo3.org/ns/FluidTYPO3/Flux/ViewHelpers"
+     xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
+    <f:section name="Main">
+        <div style="font-size:12px;">Exception Number: <b style="color:#ff9327;">#{iterator.index+1}</b> <span">//</span> Time: <b style="color:#ff9327;">{log.tstamp -> f:format.date(format: 'd.m.Y H:i:s')}</b></div>
+        <div style="font-size:11px; font-color:#222222;">
+            {log.details}
+        </div>
+    </f:section>
+</div>

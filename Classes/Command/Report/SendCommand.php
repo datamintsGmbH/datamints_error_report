@@ -30,6 +30,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use TYPO3\CMS\Belog\Domain\Model\Constraint;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 
@@ -41,6 +42,20 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 class SendCommand extends Command
 {
     /**
+     * @var \Symfony\Component\Console\Input\InputInterface
+     */
+    protected InputInterface $input;
+    /**
+     * @var \TYPO3\CMS\Core\Registry
+     */
+    protected \TYPO3\CMS\Core\Registry $registry;
+
+    /**
+     * @var \Datamints\DatamintsErrorReport\Services\MailService
+     */
+    protected \Datamints\DatamintsErrorReport\Services\MailService $mailService;
+
+    /**
      * Configure the command by defining the name, options and arguments
      */
     protected function configure (): void
@@ -48,11 +63,19 @@ class SendCommand extends Command
         $this->setDescription('Verschickt einen gebündelten Fehlerbericht der seit dem letzten Aufruf gesammelten Fehlern');
 
         $this->addOption(
-            'from',
-            'f',
+            'max',
+            'm',
             InputOption::VALUE_REQUIRED,
-            'Datum oder Date-String, ab dem Daten für den Report gesammelt werden sollen (https://www.php.net/manual/en/datetime.formats.relative.php)',
-            '-20 minutes'
+            'Maximale Anzahl der gleichzeitig verschickten Fehlermeldungen pro Mail (Schutz vor zu großen Mails)',
+            '50'
+        );
+
+        $this->addOption(
+            'name',
+            'n',
+            InputOption::VALUE_REQUIRED,
+            'Name des Systems',
+            'Vorlage'
         );
 
         $this->addOption(
@@ -62,5 +85,80 @@ class SendCommand extends Command
             'E-Mail Adresse des Empfängers. Mehrere können definiert werden, indem --recipient mehrmals spezifiert wird.',
             ['m.weisgerber@datamints.com']
         );
+    }
+
+    /**
+     * Verschickt einen gebündelten Fehlerbericht der seit dem letzten Aufruf gesammelten Fehlern
+     *
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @return int error code
+     */
+    protected function execute (InputInterface $input, OutputInterface $output): int
+    {
+        $this->input = $input;
+        $this->initializeDependencies();
+
+
+        // Logs beziehen
+        $logRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Belog\Domain\Repository\LogEntryRepository::class);
+        $logs = $logRepository->findByConstraint($this->getConstraint());
+
+        // Wenn keine Logs gefunden wurden, brauchen wir nicht weiter machen
+        if (count($logs) == 0) {
+            return 0;
+        }
+
+        // Filtern nach Fehlern, denn das LogRepo kann diese nicht vorab filtern
+        $logs = array_filter($logs->toArray(), function (\TYPO3\CMS\Belog\Domain\Model\LogEntry $log) {
+            return $log->getError() == 2;
+        });
+
+
+        // Mails verschicken
+        $this->sendMails($logs);
+
+        // Wir speichern, wann der Task aufgerufen wurde, da wir leider selber nicht abfragen können, wann der eigene Task gelaufen ist
+        $this->registry->set('datamints_error_report', 'lastExecutedTimestamp', time());
+
+        return 0;
+    }
+
+    private function initializeDependencies (): void
+    {
+        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
+        $this->registry = $this->objectManager->get(\TYPO3\CMS\Core\Registry::class);
+        $this->mailService = GeneralUtility::makeInstance(\Datamints\DatamintsErrorReport\Services\MailService::class);
+    }
+
+    /**
+     * Baut das Constraint-Objekt zusammen mit den Bedingungen
+     *
+     * @return \TYPO3\CMS\Belog\Domain\Model\Constraint
+     */
+    protected function getConstraint (): Constraint
+    {
+
+        /** @var Constraint $constraint */
+        $constraint = GeneralUtility::makeInstance(Constraint::class);
+        $constraint->setStartTimestamp(intval($this->registry->get('datamints_error_report', 'lastExecutedTimestamp')));
+        //$constraint->setStartTimestamp(0); // Für Testzwecke alle Reports ausgeben (wird aber nochmal begrenzt, also keine Sorge)
+        $constraint->setNumber(intval($this->input->getOption('max'))); // Maximale Anzahl
+        $constraint->setEndTimestamp(time());
+        return $constraint;
+    }
+
+    protected function sendMails ($logs)
+    {
+        $mailTemplate = $this->mailService->getRenderedReport('Error', ['logs' => $logs, 'name' => $this->input->getOption('name')]);
+
+
+        $recipients = $this->input->getOption('recipient');
+
+        foreach ($recipients as $recipient) {
+            $this->mailService->sendMailByString($recipient, 'Error Report: ' . $this->input->getOption('name'), $mailTemplate);
+        }
+
     }
 }

@@ -1,0 +1,24 @@
+<html data-namespace-typo3-fluid="true" xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+<f:comment>
+    Es ist wohl klar, dass ein Mail Template nicht schön ist, oder? ^^
+</f:comment>
+<html>
+<head>
+</head>
+<body style="{f:render(partial:'Mail/DefaultInlineStyle',section:'Main')}{f:render(partial:'Mail/DefaultInlineStyle',section:'bg-white')}">
+<table style="{f:render(partial:'Mail/DefaultInlineStyle',section:'bg-white')} {f:render(partial:'Mail/DefaultInlineStyle',section:'w-100')}">
+    <tr>
+        <td style="{f:render(partial:'Mail/DefaultInlineStyle',section:'padding')}">
+            <f:render arguments="{_all}" partial="Mail/Layout/Header" section="Main"/>
+        </td>
+    </tr>
+    <tr>
+        <td style="{f:render(partial:'Mail/DefaultInlineStyle',section:'padding')}{f:render(partial:'Mail/DefaultInlineStyle',section:'Main')}">
+            <f:render section="content"/>
+        </td>
+    </tr>
+</table>
+</body>
+</html>
+
+</html>
