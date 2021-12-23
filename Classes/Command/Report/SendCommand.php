@@ -64,7 +64,7 @@ class SendCommand extends Command
 
         $this->addOption(
             'max',
-            'm',
+            null,
             InputOption::VALUE_REQUIRED,
             'Maximale Anzahl der gleichzeitig verschickten Fehlermeldungen pro Mail (Schutz vor zu großen Mails)',
             '50'
@@ -72,7 +72,7 @@ class SendCommand extends Command
 
         $this->addOption(
             'name',
-            'n',
+            null,
             InputOption::VALUE_REQUIRED,
             'Name des Systems',
             'Vorlage'
@@ -80,7 +80,7 @@ class SendCommand extends Command
 
         $this->addOption(
             'recipient',
-            'r',
+            null,
             InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
             'E-Mail Adresse des Empfängers. Mehrere können definiert werden, indem --recipient mehrmals spezifiert wird.',
             ['m.weisgerber@datamints.com']
