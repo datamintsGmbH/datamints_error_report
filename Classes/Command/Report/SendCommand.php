@@ -114,7 +114,10 @@ class SendCommand extends Command
         $logs = array_filter($logs->toArray(), function (\TYPO3\CMS\Belog\Domain\Model\LogEntry $log) {
             return $log->getError() == 2;
         });
-
+        // Prüfen, ob nach der Filterung KEINE Logs mehr übrig sind, denn in dem Fall brechen wir ebenfalls ab!
+        if (count($logs) == 0) {
+            return 0;
+        }
 
         // Mails verschicken
         $this->sendMails($logs);
