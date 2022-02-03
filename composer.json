@@ -1,32 +1,39 @@
 {
-    "name": "datamints/datamints-error-report",
-    "type": "typo3-cms-extension",
-    "description": "sends bundled error-log entries by email",
-    "authors": [
-        {
-            "name": "Mark Weisgerber",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "typo3/cms-core": "^10.4"
-    },
-    "autoload": {
-        "psr-4": {
-            "Datamints\\DatamintsErrorReport\\": "Classes"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Datamints\\DatamintsErrorReport\\Tests\\": "Tests"
-        }
-    },
-    "replace": {
-        "typo3-ter/datamints-error-report": "self.version"
-    },
-    "extra": {
-        "typo3/cms": {
-            "extension-key": "datamints_error_report"
-        }
-    }
+	"name": "datamints/error_report",
+	"type": "typo3-cms-extension",
+	"description": "sends bundled error-log entries by email",
+	"keywords": [
+		"error",
+		"exception",
+		"task",
+		"email",
+		"scheduler",
+		"send",
+		"bundled"
+	],
+	"authors": [
+		{
+			"name": "Mark Weisgerber",
+			"email": "m.weisgerber@datamints.com",
+			"role": "Developer",
+			"homepage": "https://www.datamints.com/"
+		}
+	],
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"typo3/cms-core": "^10.4"
+	},
+	"autoload": {
+		"psr-4": {
+			"Datamints\\DatamintsErrorReport\\": "Classes"
+		}
+	},
+	"replace": {
+		"typo3-ter/datamints-error-report": "self.version"
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "datamints_error_report"
+		}
+	}
 }
