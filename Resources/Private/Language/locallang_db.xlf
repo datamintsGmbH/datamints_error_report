@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.0">
-  <file source-language="en" datatype="plaintext" original="EXT:datamints_error_report/Resources/Private/Language/locallang_db" date="2022-02-0314:53:29Z" product-name="datamints_error_report">
+  <file source-language="en" datatype="plaintext" original="EXT:datamints_error_report/Resources/Private/Language/locallang_db" date="2022-02-0408:25:12Z" product-name="datamints_error_report">
     <header>
       <!--This translation file was generated automatically by the "datamints_locallang_builder" extension. Please note that changes to this file can be lost the next time someone triggers an export in the TYPO3 Backend-module-->
     </header>
@@ -8,6 +8,25 @@
       <trans-unit id="mail.log-entries.title" resname="mail.log-entries.title" approved="yes">
         <!--part of mail template-->
         <source>The following exceptions have been registered since the last email:</source>
+      </trans-unit>
+      <trans-unit id="mail.footer.info" resname="mail.footer.info" approved="no">
+        <!--part of mail template-->
+        <source>You have received this email because you are on the distribution list in the TYPO3 scheduler task of this system. If you do not wish to receive this email, please unsubscribe from the administrator of this domain.</source>
+      </trans-unit>
+      <trans-unit id="mail.log.entry-nr" resname="mail.log.entry-nr" approved="no">
+        <!--part of mail template-->
+        <source>Exception Number</source>
+      </trans-unit>
+      <trans-unit id="mail.log.entry-time" resname="mail.log.entry-time" approved="no">
+        <!--part of mail template-->
+        <source>Time</source>
+      </trans-unit>
+      <trans-unit id="mail.header.system" resname="mail.header.system" approved="no">
+        <!--part of mail template-->
+        <source>System</source>
+      </trans-unit>
+      <trans-unit id="mail.headline" resname="mail.headline" approved="no">
+        <source>datamints Error Report</source>
       </trans-unit>
     </body>
   </file>

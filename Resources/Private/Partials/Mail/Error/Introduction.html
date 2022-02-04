@@ -9,8 +9,13 @@
         <table style="{f:render(partial:'Mail/DefaultInlineStyle',section:'bg-white')} {f:render(partial:'Mail/DefaultInlineStyle',section:'w-100')}">
             <tr>
                 <td style="{f:render(partial:'Mail/DefaultInlineStyle',section:'Main')}">
-                    <h1>datamints Error Report</h1>
-                    <h3>System: {name}</h3>
+                    <h1>
+                        <f:translate key="LLL:EXT:datamints_error_report/Resources/Private/Language/locallang_db.xlf:mail.headline"/>
+                    </h1>
+                    <h3>
+                        <f:translate key="LLL:EXT:datamints_error_report/Resources/Private/Language/locallang_db.xlf:mail.header.system"/>
+                        : {name}
+                    </h3>
                 </td>
             </tr>
         </table>

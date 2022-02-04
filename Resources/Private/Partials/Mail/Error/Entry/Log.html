@@ -6,7 +6,11 @@
      xmlns:flux="http://typo3.org/ns/FluidTYPO3/Flux/ViewHelpers"
      xmlns:v="http://typo3.org/ns/FluidTYPO3/Vhs/ViewHelpers">
     <f:section name="Main">
-        <div style="font-size:12px;">Exception Number: <b style="color:#ff9327;">#{iterator.index+1}</b> <span">//</span> Time: <b style="color:#ff9327;">{log.tstamp -> f:format.date(format: 'd.m.Y H:i:s')}</b></div>
+        <div style="font-size:12px;">
+            <f:translate key="LLL:EXT:datamints_error_report/Resources/Private/Language/locallang_db.xlf:mail.log.entry-nr"/>
+            : <b style="color:#ff9327;">#{iterator.index+1}</b> <span">//</span>
+            <f:translate key="LLL:EXT:datamints_error_report/Resources/Private/Language/locallang_db.xlf:mail.log.entry-time"/>
+            : <b style="color:#ff9327;">{log.tstamp -> f:format.date(format: 'd.m.Y H:i:s')}</b></div>
         <div style="font-size:11px; font-color:#222222;">
             {log.details}
         </div>
