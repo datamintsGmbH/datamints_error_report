@@ -56,12 +56,12 @@ class DispatchCommand extends Command
      */
     protected function configure (): void
     {
-        $this->setDescription('Provoziert eine Exception, um den Report testen zu können');
+        $this->setDescription('Triggers an exception to test the report');
 
     }
 
     /**
-     * Löst eine Exception aus, um den Report testen zu können
+     * Triggers an exception to test the report sending scheduler task
      *
      * @param InputInterface  $input
      * @param OutputInterface $output
@@ -70,7 +70,7 @@ class DispatchCommand extends Command
      */
     protected function execute (InputInterface $input, OutputInterface $output): int
     {
-        $this->un();
+        $this->forceError();
         throw new \Exception("test error");
         return 0;
     }

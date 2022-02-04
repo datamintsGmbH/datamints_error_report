@@ -5,7 +5,7 @@ namespace Datamints\DatamintsErrorReport\Command\Report;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2019 Mark Weisgerber <m.weisgerber@datamints.com>, datamints GmbH
+ *  (c) 2022 Mark Weisgerber <m.weisgerber@datamints.com>, datamints GmbH
  *
  *  All rights reserved
  *
@@ -36,7 +36,7 @@ use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  *
- * @package datamints_elearning
+ * @package datamints_error_report
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
  */
 class SendCommand extends Command
@@ -60,13 +60,13 @@ class SendCommand extends Command
      */
     protected function configure (): void
     {
-        $this->setDescription('Verschickt einen gebündelten Fehlerbericht der seit dem letzten Aufruf gesammelten Fehlern');
+        $this->setDescription('Sends a bundled bug report of the bugs collected since the last run');
 
         $this->addOption(
             'max',
             null,
             InputOption::VALUE_REQUIRED,
-            'Maximale Anzahl der gleichzeitig verschickten Fehlermeldungen pro Mail (Schutz vor zu großen Mails)',
+            'Maximum number of error messages sent simultaneously per email (protection against emails that are too large)',
             '50'
         );
 
@@ -74,21 +74,21 @@ class SendCommand extends Command
             'name',
             null,
             InputOption::VALUE_REQUIRED,
-            'Name des Systems',
-            'Vorlage'
+            'Name of the current system (to identify multiple TYPO3 instances)',
+            'Draft'
         );
 
         $this->addOption(
             'recipient',
             null,
             InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-            'E-Mail Adresse des Empfängers. Mehrere können definiert werden, indem --recipient mehrmals spezifiert wird.',
-            ['m.weisgerber@datamints.com']
+            'Recipients e-mail address. Multiple can be defined by specifying --recipient multiple times.',
+            ['']
         );
     }
 
     /**
-     * Verschickt einen gebündelten Fehlerbericht der seit dem letzten Aufruf gesammelten Fehlern
+     * Sends a bundled bug report of the bugs collected since the last run
      *
      * @param InputInterface  $input
      * @param OutputInterface $output
@@ -101,33 +101,38 @@ class SendCommand extends Command
         $this->initializeDependencies();
 
 
-        // Logs beziehen
+        // Fetch logs
         $logRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Belog\Domain\Repository\LogEntryRepository::class);
         $logs = $logRepository->findByConstraint($this->getConstraint());
 
-        // Wenn keine Logs gefunden wurden, brauchen wir nicht weiter machen
+        // If no logs were found, we don't need to continue
         if (count($logs) == 0) {
             return 0;
         }
-
-        // Filtern nach Fehlern, denn das LogRepo kann diese nicht vorab filtern
+        // Filter for errors, because the LogRepo cannot filter them in advance
         $logs = array_filter($logs->toArray(), function (\TYPO3\CMS\Belog\Domain\Model\LogEntry $log) {
             return $log->getError() == 2;
         });
-        // Prüfen, ob nach der Filterung KEINE Logs mehr übrig sind, denn in dem Fall brechen wir ebenfalls ab!
+        // Check if there are NO logs left after filtering, because in that case we will also stop!
         if (count($logs) == 0) {
             return 0;
         }
 
-        // Mails verschicken
+        // Send mails
         $this->sendMails($logs);
 
-        // Wir speichern, wann der Task aufgerufen wurde, da wir leider selber nicht abfragen können, wann der eigene Task gelaufen ist
-        $this->registry->set('datamints_error_report', 'lastExecutedTimestamp', time());
+        // We save when the task was called because unfortunately we cannot query when our own task ran
+        $this->registry->set(\Datamints\DatamintsErrorReport\Utility\ErrorReportUtility::EXTENSION_NAME, 'lastExecutedTimestamp', time());
 
         return 0;
     }
 
+    /**
+     * Initializes the dependencies
+     *
+     * @return void
+     * @throws \TYPO3\CMS\Extbase\Object\Exception
+     */
     private function initializeDependencies (): void
     {
         $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
@@ -136,7 +141,7 @@ class SendCommand extends Command
     }
 
     /**
-     * Baut das Constraint-Objekt zusammen mit den Bedingungen
+     * Builds the constraint object along with the conditions
      *
      * @return \TYPO3\CMS\Belog\Domain\Model\Constraint
      */
@@ -145,13 +150,20 @@ class SendCommand extends Command
 
         /** @var Constraint $constraint */
         $constraint = GeneralUtility::makeInstance(Constraint::class);
-        $constraint->setStartTimestamp(intval($this->registry->get('datamints_error_report', 'lastExecutedTimestamp')));
-        //$constraint->setStartTimestamp(0); // Für Testzwecke alle Reports ausgeben (wird aber nochmal begrenzt, also keine Sorge)
-        $constraint->setNumber(intval($this->input->getOption('max'))); // Maximale Anzahl
+        $constraint->setStartTimestamp(intval($this->registry->get(\Datamints\DatamintsErrorReport\Utility\ErrorReportUtility::EXTENSION_NAME, 'lastExecutedTimestamp')));
+        //$constraint->setStartTimestamp(0); // Output all reports for test purposes (but will be limited again, so don't worry)
+        $constraint->setNumber(intval($this->input->getOption('max'))); // Maximum amount of log entries
         $constraint->setEndTimestamp(time());
         return $constraint;
     }
 
+    /**
+     * Sends the emails
+     *
+     * @param $logs
+     *
+     * @return void
+     */
     protected function sendMails ($logs)
     {
         $mailTemplate = $this->mailService->getRenderedReport('Error', ['logs' => $logs, 'name' => $this->input->getOption('name')]);

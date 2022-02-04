@@ -65,6 +65,6 @@ class ConfigurationService implements SingletonInterface
      */
     public function getExtensionConfiguration ()
     {
-        return $this->extensionConfiguration->get('datamints_error_report');
+        return $this->extensionConfiguration->get(\Datamints\DatamintsErrorReport\Utility\ErrorReportUtility::EXTENSION_NAME);
     }
 }

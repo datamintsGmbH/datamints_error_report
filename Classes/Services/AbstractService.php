@@ -45,7 +45,7 @@ abstract class AbstractService implements SingletonInterface
      */
     public function getExtensionConfig (): array
     {
-        return unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['datamints_error_report']);
+        return unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][\Datamints\DatamintsErrorReport\Utility\ErrorReportUtility::EXTENSION_NAME]);
     }
 
     /**

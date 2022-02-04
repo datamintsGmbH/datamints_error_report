@@ -8,6 +8,7 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 
 class ErrorReportUtility
 {
+    public const EXTENSION_NAME = "datamints_error_report";
 
     /**
      * @param string $templatePath
@@ -19,6 +20,7 @@ class ErrorReportUtility
     {
         /** @var StandaloneView $standaloneView */
         $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);
+        // @TODO fetch paths from typoscript
         $standaloneView->setLayoutRootPaths(['EXT:datamints_error_report/Resources/Private/Layouts']);
         $standaloneView->setPartialRootPaths(['EXT:datamints_error_report/Resources/Private/Partials']);
         $standaloneView->setTemplateRootPaths(['EXT:datamints_error_report/Resources/Private/Templates']);

@@ -8,12 +8,12 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /***
  *
- * This file is part of the "datamints elearning" Extension for TYPO3 CMS.
+ * This file is part of the "datamints error_report" Extension for TYPO3 CMS.
  *
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  *
- *  (c) 2020 Mark Weisgerber <m.weisgerber@datamints.com>, datamints GmbH
+ *  (c) 2022 Mark Weisgerber <m.weisgerber@datamints.com>, datamints GmbH
  *
  ***/
 
@@ -22,18 +22,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class MailService extends AbstractService
 {
-    /**
-     * Sendet eine Zusammenfassung einer Rechnung
-     *
-     * @param \Datamints\DatamintsElearning\Domain\Model\Bill $bill
-     */
-    public function sendBillSummary ($bill)
-    {
-
-    }
 
     /**
-     * Template für die Mail bereitstellen
+     * Provide template for the mail as a standalone fluid template
      *
      * @param string $templateFilename
      * @param array  $variables
@@ -50,14 +41,14 @@ class MailService extends AbstractService
     }
 
     /**
-     * Schickt eine Mail
+     * Sends the report email
      *
-     * @param string $receiver    Empfänger
-     * @param string $subjectText Betreff
+     * @param string $receiver    Receiver
+     * @param string $subjectText Subject
      * @param string $bodyText    Mailtext
      * @param array  $attachements
      */
-    public function sendMailByString ($receiver, $subjectText, $bodyText, $attachements = [])
+    public function sendMailByString (string $receiver, string $subjectText, string $bodyText, array $attachements = []): void
     {
         $defaultFromSender = \TYPO3\CMS\Core\Utility\MailUtility::getSystemFrom();
 
@@ -67,7 +58,8 @@ class MailService extends AbstractService
         if (GeneralUtility::validEmail(\TYPO3\CMS\Core\Utility\MailUtility::getSystemFromAddress())) {
             $mail->setFrom($defaultFromSender);
         } else {
-            $mail->setFrom(['info@datamints.com' => 'please define mail sender in installtool']); // Placeholder falls im Install Tool nichts eingetragen ist
+            // Placeholder if nothing is entered in the install tool
+            $mail->setFrom(['info@datamints.com' => 'please define mail sender in installtool']);
         }
         // this header tells auto-repliers ("email holiday mode") to not
         // reply to this message because it's an automated email
