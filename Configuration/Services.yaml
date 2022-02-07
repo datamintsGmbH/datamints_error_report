@@ -1,0 +1,14 @@
+services:
+  _defaults                                                :
+    autowire     : true
+    autoconfigure: true
+    public       : true
+
+  Datamints\DatamintsErrorReport\Command\Report\SendCommand:
+    tags:
+      - name   : 'console.command'
+        command: 'error-report:report:send'
+  Datamints\DatamintsErrorReport\Command\DispatchCommand   :
+    tags:
+      - name   : 'console.command'
+        command: 'error-report:dispatch'
