@@ -7,6 +7,11 @@ Change log
 ==========
 
 
+Version 1.0.5
+-------------
+
+[BUG] Removed var type declaration in Command class to gain backwards compatibility for php7
+
 Version 1.0.4
 -------------
 

@@ -44,11 +44,11 @@ class DispatchCommand extends Command
     /**
      * @var \Symfony\Component\Console\Input\InputInterface
      */
-    protected InputInterface $input;
+    protected $input;
     /**
      * @var \TYPO3\CMS\Core\Registry
      */
-    protected \TYPO3\CMS\Core\Registry $registry;
+    protected $registry;
 
 
     /**
