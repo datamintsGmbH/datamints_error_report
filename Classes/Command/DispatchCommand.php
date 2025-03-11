@@ -32,7 +32,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Belog\Domain\Model\Constraint;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  *
@@ -57,7 +56,6 @@ class DispatchCommand extends Command
     protected function configure (): void
     {
         $this->setDescription('Triggers an exception to test the report');
-
     }
 
     /**
@@ -70,7 +68,6 @@ class DispatchCommand extends Command
      */
     protected function execute (InputInterface $input, OutputInterface $output): int
     {
-        $this->forceError();
         throw new \Exception("test error");
         return 0;
     }

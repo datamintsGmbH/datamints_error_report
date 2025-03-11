@@ -8,15 +8,14 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 
 class ErrorReportUtility
 {
-    public const EXTENSION_NAME = "datamints_error_report";
+    public const string EXTENSION_NAME = "datamints_error_report";
 
     /**
      * @param string $templatePath
      * @param string $controller
-     *
      * @return StandaloneView
      */
-    public static function getFluidStandaloneViewWithTemplate ($templatePath = '', $controller = '')
+    public static function getFluidStandaloneViewWithTemplate (string $templatePath = '', string $controller = ''): StandaloneView
     {
         /** @var StandaloneView $standaloneView */
         $standaloneView = GeneralUtility::makeInstance(StandaloneView::class);

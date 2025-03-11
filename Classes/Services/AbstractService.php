@@ -7,25 +7,21 @@ namespace Datamints\DatamintsErrorReport\Services;
 
 use Datamints\DatamintsErrorReport\Services\Configuration\ConfigurationService;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Configuration\ConfigurationManagerInterface;
 
 abstract class AbstractService implements SingletonInterface
 {
-
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
+     * configurationService
+     *
      * @var \Datamints\DatamintsErrorReport\Services\Configuration\ConfigurationService
      */
-    protected $configurationService;
+    protected \Datamints\DatamintsErrorReport\Services\Configuration\ConfigurationService $configurationService;
 
     public function __construct ()
     {
-        $this->objectManager = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(\TYPO3\CMS\Extbase\Object\ObjectManager::class);
-        $this->configurationService = $this->objectManager->get(ConfigurationService::class);
+        $this->configurationService = GeneralUtility::makeInstance(ConfigurationService::class);
     }
 
     /**
@@ -49,11 +45,10 @@ abstract class AbstractService implements SingletonInterface
     }
 
     /**
-     * @return ConfigurationManagerInterface
+     * @param \Datamints\DatamintsErrorReport\Services\Configuration\ConfigurationService $configurationService
      */
-    public function getConfigurationManager (): ConfigurationManagerInterface
+    public function injectConfigurationService(\Datamints\DatamintsErrorReport\Services\Configuration\ConfigurationService $configurationService): void
     {
-        return $this->objectManager->get(ConfigurationManagerInterface::class);
+        $this->configurationService = $configurationService;
     }
-
 }

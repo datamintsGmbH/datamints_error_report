@@ -32,7 +32,6 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use TYPO3\CMS\Belog\Domain\Model\Constraint;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 
 /**
  *
@@ -44,11 +43,11 @@ class SendCommand extends Command
     /**
      * @var \Symfony\Component\Console\Input\InputInterface
      */
-    protected $input;
+    protected InputInterface $input;
     /**
      * @var \TYPO3\CMS\Core\Registry
      */
-    protected $registry;
+    protected \TYPO3\CMS\Core\Registry $registry;
 
     /**
      * @var \Datamints\DatamintsErrorReport\Services\MailService
@@ -58,7 +57,7 @@ class SendCommand extends Command
     /**
      * Configure the command by defining the name, options and arguments
      */
-    protected function configure (): void
+    protected function configure ()
     {
         $this->setDescription('Sends a bundled bug report of the bugs collected since the last run');
 
@@ -135,8 +134,7 @@ class SendCommand extends Command
      */
     private function initializeDependencies (): void
     {
-        $this->objectManager = GeneralUtility::makeInstance(ObjectManager::class);
-        $this->registry = $this->objectManager->get(\TYPO3\CMS\Core\Registry::class);
+        $this->registry = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Registry::class);
         $this->mailService = GeneralUtility::makeInstance(\Datamints\DatamintsErrorReport\Services\MailService::class);
     }
 
@@ -147,7 +145,6 @@ class SendCommand extends Command
      */
     protected function getConstraint (): Constraint
     {
-
         /** @var Constraint $constraint */
         $constraint = GeneralUtility::makeInstance(Constraint::class);
         $constraint->setStartTimestamp(intval($this->registry->get(\Datamints\DatamintsErrorReport\Utility\ErrorReportUtility::EXTENSION_NAME, 'lastExecutedTimestamp')));
@@ -167,7 +164,6 @@ class SendCommand extends Command
     protected function sendMails ($logs)
     {
         $mailTemplate = $this->mailService->getRenderedReport('Error', ['logs' => $logs, 'name' => $this->input->getOption('name')]);
-
 
         $recipients = $this->input->getOption('recipient');
 

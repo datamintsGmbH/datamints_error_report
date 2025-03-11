@@ -4,6 +4,8 @@ services:
     autoconfigure: true
     public       : true
 
+  Datamints\DatamintsErrorReport\:
+    resource: '../Classes/*'
   Datamints\DatamintsErrorReport\Command\Report\SendCommand:
     tags:
       - name   : 'console.command'

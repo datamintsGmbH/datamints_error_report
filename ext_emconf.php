@@ -8,10 +8,10 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'm.weisgerber@datamints.com',
     'state' => 'stable',
     'clearCacheOnLoad' => 1,
-    'version' => '1.0.5',
+    'version' => '2.0.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.4.0-11.9.99',
+            'typo3' => '10.4.0-13.99.99',
         ],
         'conflicts' => [],
         'suggests' => [],
